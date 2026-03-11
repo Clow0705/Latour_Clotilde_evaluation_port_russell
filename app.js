@@ -71,6 +71,7 @@ app.use('/', require('./routes/auth'));
 app.use('/catways', require('./routes/catways'));
 app.use('/users', require('./routes/users'));
 
-app.listen(process.env.PORT, () =>
-  console.log(`Serveur lancé sur http://localhost:${process.env.PORT}`)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =>
+  console.log(`Serveur lancé sur http://localhost:${PORT}`)
 );
