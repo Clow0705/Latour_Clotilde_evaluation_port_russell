@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Réservations</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">🏠 Tableau de bord</a>
+    <a href="/page-catways">⚓ Catways</a>
+    <a href="/page-reservations">📅 Réservations</a>
+    <a href="/page-users">👥 Utilisateurs</a>
+    <a href="/api-docs">📄 API Docs</a>
+    <a href="/logout">🚪 Déconnexion</a>
+  </nav>
+  <div class="container">
+    <h1>📅 Gestion des Réservations</h1>
+
+    <h2>Ajouter une réservation</h2>
+    <form id="formAjout" action="/catways/1/reservations" method="POST">
+      <input type="number" id="catwayNumberInput" name="catwayNumber" placeholder="Numéro catway" required />
+      <input type="text" name="clientName" placeholder="Nom du client" required />
+      <input type="text" name="boatName" placeholder="Nom du bateau" required />
+      <input type="date" name="startDate" required />
+      <input type="date" name="endDate" required />
+      <button type="submit">Ajouter</button>
+    </form>
+
+    <h2>Liste des réservations</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Catway</th>
+          <th>Client</th>
+          <th>Bateau</th>
+          <th>Début</th>
+          <th>Fin</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% reservations.forEach(r => { %>
+        <tr>
+          <td><%= r.catwayNumber %></td>
+          <td><%= r.clientName %></td>
+          <td><%= r.boatName %></td>
+          <td><%= new Date(r.startDate).toLocaleDateString('fr-FR') %></td>
+          <td><%= new Date(r.endDate).toLocaleDateString('fr-FR') %></td>
+          <td>
+            <a href="/page-reservations/<%= r._id %>">🔍 Détail</a>
+            <button onclick="ouvrirModif('<%= r._id %>', '<%= r.catwayNumber %>', '<%= r.clientName %>', '<%= r.boatName %>', '<%= new Date(r.startDate).toISOString().split('T')[0] %>', '<%= new Date(r.endDate).toISOString().split('T')[0] %>')">✏️ Modifier</button>
+            <form action="/catways/<%= r.catwayNumber %>/reservations/<%= r._id %>?_method=DELETE" method="POST" style="display:inline">
+              <button type="submit" onclick="return confirm('Supprimer cette réservation ?')">🗑️ Supprimer</button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;">
+    <div style="background:white; max-width:400px; margin:100px auto; padding:30px; border-radius:8px;">
+      <h2>Modifier la réservation</h2>
+      <form id="formModif" method="POST">
+        <input type="text" id="clientName" name="clientName" placeholder="Nom du client" required />
+        <input type="text" id="boatName" name="boatName" placeholder="Nom du bateau" required />
+        <input type="date" id="startDate" name="startDate" required />
+        <input type="date" id="endDate" name="endDate" required />
+        <button type="submit">Enregistrer</button>
+        <button type="button" onclick="fermerModif()">Annuler</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Met à jour l'action du formulaire d'ajout selon le numéro de catway
+    document.getElementById('catwayNumberInput').addEventListener('change', function() {
+      document.getElementById('formAjout').action = '/catways/' + this.value + '/reservations';
+    });
+
+    function ouvrirModif(id, catwayNumber, clientName, boatName, startDate, endDate) {
+      document.getElementById('clientName').value = clientName;
+      document.getElementById('boatName').value = boatName;
+      document.getElementById('startDate').value = startDate;
+      document.getElementById('endDate').value = endDate;
+      document.getElementById('formModif').action = '/catways/' + catwayNumber + '/reservations/' + id + '?_method=PUT';
+      document.getElementById('modal').style.display = 'block';
+    }
+
+    function fermerModif() {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

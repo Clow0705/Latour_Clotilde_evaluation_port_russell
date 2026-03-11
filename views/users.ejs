@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Utilisateurs</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">🏠 Tableau de bord</a>
+    <a href="/page-catways">⚓ Catways</a>
+    <a href="/page-reservations">📅 Réservations</a>
+    <a href="/page-users">👥 Utilisateurs</a>
+    <a href="/api-docs">📄 API Docs</a>
+    <a href="/logout">🚪 Déconnexion</a>
+  </nav>
+  <div class="container">
+    <h1>👥 Gestion des Utilisateurs</h1>
+
+    <h2>Ajouter un utilisateur</h2>
+    <form action="/users" method="POST">
+      <input type="text" name="username" placeholder="Nom d'utilisateur" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Mot de passe (min. 6 caractères)" required />
+      <button type="submit">Ajouter</button>
+    </form>
+
+    <h2>Liste des utilisateurs</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.username %></td>
+          <td><%= u.email %></td>
+          <td>
+            <a href="/page-users/<%= u.email %>">🔍 Détail</a>
+            <button onclick="ouvrirModif('<%= u.email %>', '<%= u.username %>')">✏️ Modifier</button>
+            <form action="/users/<%= u.email %>?_method=DELETE" method="POST" style="display:inline">
+              <button type="submit" onclick="return confirm('Supprimer cet utilisateur ?')">🗑️ Supprimer</button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;">
+    <div style="background:white; max-width:400px; margin:100px auto; padding:30px; border-radius:8px;">
+      <h2>Modifier l'utilisateur</h2>
+      <form id="formModif" method="POST">
+        <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required />
+        <input type="email" id="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Nouveau mot de passe (optionnel)" />
+        <button type="submit">Enregistrer</button>
+        <button type="button" onclick="fermerModif()">Annuler</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function ouvrirModif(email, username) {
+      document.getElementById('username').value = username;
+      document.getElementById('email').value = email;
+      document.getElementById('formModif').action = '/users/' + email + '?_method=PUT';
+      document.getElementById('modal').style.display = 'block';
+    }
+    function fermerModif() {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

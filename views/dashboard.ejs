@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tableau de bord</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">🏠 Accueil</a>
+    <a href="/page-catways">⚓ Catways</a>
+    <a href="/page-reservations">📅 Réservations</a>
+    <a href="/page-users">👥 Utilisateurs</a>
+    <a href="/api-docs">📄 API Docs</a>
+    <a href="/logout">🚪 Déconnexion</a>
+  </nav>
+
+  <div class="container">
+    <h1>Tableau de bord</h1>
+    <p>👤 <strong><%= user.username %></strong> — <%= user.email %></p>
+    <p>📅 Date du jour : <strong><%= today.toLocaleDateString('fr-FR') %></strong></p>
+
+    <h2>Réservations en cours</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Catway</th>
+          <th>Client</th>
+          <th>Bateau</th>
+          <th>Début</th>
+          <th>Fin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% reservations.forEach(r => { %>
+        <tr>
+          <td><%= r.catwayNumber %></td>
+          <td><%= r.clientName %></td>
+          <td><%= r.boatName %></td>
+          <td><%= new Date(r.startDate).toLocaleDateString('fr-FR') %></td>
+          <td><%= new Date(r.endDate).toLocaleDateString('fr-FR') %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

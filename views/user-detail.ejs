@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Détail Utilisateur</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">🏠 Tableau de bord</a>
+    <a href="/page-catways">⚓ Catways</a>
+    <a href="/page-reservations">📅 Réservations</a>
+    <a href="/page-users">👥 Utilisateurs</a>
+    <a href="/api-docs">📄 API Docs</a>
+    <a href="/logout">🚪 Déconnexion</a>
+  </nav>
+  <div class="container">
+    <h1>👤 Détail de l'utilisateur</h1>
+
+    <p><strong>Nom d'utilisateur :</strong> <%= user.username %></p>
+    <p><strong>Email :</strong> <%= user.email %></p>
+
+    <h2>Modifier l'utilisateur</h2>
+    <form action="/users/<%= user.email %>?_method=PUT" method="POST">
+      <input type="text" name="username" value="<%= user.username %>" placeholder="Nom d'utilisateur" required />
+      <input type="email" name="email" value="<%= user.email %>" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Nouveau mot de passe (optionnel)" />
+      <button type="submit">Enregistrer</button>
+    </form>
+
+    <a href="/page-users">← Retour à la liste</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Catways</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">🏠 Tableau de bord</a>
+    <a href="/page-catways">⚓ Catways</a>
+    <a href="/page-reservations">📅 Réservations</a>
+    <a href="/page-users">👥 Utilisateurs</a>
+    <a href="/api-docs">📄 API Docs</a>
+    <a href="/logout">🚪 Déconnexion</a>
+  </nav>
+  <div class="container">
+    <h1>⚓ Gestion des Catways</h1>
+
+    <h2>Ajouter un catway</h2>
+    <form action="/catways" method="POST">
+      <input type="number" name="catwayNumber" placeholder="Numéro" required />
+      <select name="catwayType">
+        <option value="long">Long</option>
+        <option value="short">Short</option>
+      </select>
+      <input type="text" name="catwayState" placeholder="État" required />
+      <button type="submit">Ajouter</button>
+    </form>
+
+    <h2>Liste des catways</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Numéro</th>
+          <th>Type</th>
+          <th>État</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% catways.forEach(c => { %>
+        <tr>
+          <td><%= c.catwayNumber %></td>
+          <td><%= c.catwayType %></td>
+          <td><%= c.catwayState %></td>
+          <td>
+            <a href="/page-catways/<%= c.catwayNumber %>">🔍 Détail</a>
+            <button onclick="ouvrirModif(<%= c.catwayNumber %>, '<%= c.catwayState %>')">✏️ Modifier</button>
+            <form action="/catways/<%= c.catwayNumber %>?_method=DELETE" method="POST" style="display:inline">
+              <button type="submit" onclick="return confirm('Supprimer ce catway ?')">🗑️ Supprimer</button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal modification -->
+  <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;">
+    <div style="background:white; max-width:400px; margin:100px auto; padding:30px; border-radius:8px;">
+      <h2>Modifier l'état du catway</h2>
+      <form id="formModif" method="POST">
+        <input type="text" id="newState" name="catwayState" placeholder="Nouvel état" required />
+        <button type="submit">Enregistrer</button>
+        <button type="button" onclick="fermerModif()">Annuler</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function ouvrirModif(number, state) {
+      document.getElementById('newState').value = state;
+      document.getElementById('formModif').action = '/catways/' + number + '?_method=PUT';
+      document.getElementById('modal').style.display = 'block';
+    }
+    function fermerModif() {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
