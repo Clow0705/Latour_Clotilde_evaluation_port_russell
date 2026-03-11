@@ -21,7 +21,11 @@ app.use(express.static('public'));
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    secure: false,
+    maxAge: 24 * 60 * 60 * 1000
+  }
 }));
 
 // Pages
@@ -50,6 +54,7 @@ app.get('/page-users', auth, async (req, res) => {
   const users = await User.find().select('-password');
   res.render('users', { users });
 });
+
 app.get('/page-users/:email', auth, async (req, res) => {
   const user = await User.findOne({ email: req.params.email }).select('-password');
   res.render('user-detail', { user });
